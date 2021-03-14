@@ -1,0 +1,12 @@
+#!/bin/bash
+
+diff=$(git diff --cached --name-only | grep ".py")
+
+echo $diff | while IFS= read -r line; do
+  score=$(pylint $line | tail -n 2 | cut -d "/" -f 1 | cut -d " " -f 7 | cut -d "." -f 1)
+  if (( $score < "9" )); then
+    echo -e "pylint check failed on file $line"
+    exit 1
+  fi
+done
+exit 0
